@@ -9,7 +9,7 @@
 
   <groupId>org.terracotta.forge</groupId>
   <artifactId>forge-parent</artifactId>
-  <version>3.2-SNAPSHOT</version>
+  <version>3.2</version>
   <packaging>pom</packaging>
 
   <name>forge-parent</name>
@@ -196,7 +196,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.terracotta</groupId>
                     <artifactId>maven-forge-plugin</artifactId>
-                    <versionRange>[1.0.0-SNAPSHOT,)</versionRange>
+                    <versionRange>[1.0.0,)</versionRange>
                     <goals>
                       <goal>manifest</goal>
                       <goal>setl2classpath</goal>
