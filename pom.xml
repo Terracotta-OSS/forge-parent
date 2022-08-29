@@ -8,14 +8,20 @@
 
   <groupId>org.terracotta.forge</groupId>
   <artifactId>forge-parent</artifactId>
-  <version>3.32-SNAPSHOT</version>
+  <version>3.1000-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>forge-parent</name>
   <description>
-	Parent POM for Terracotta projects.  The 3.x line is for JDK1.6 based projects.  4.x requires JDK1.8
-	Starting with 3.28, projects inheriting this pom must be run with JDK 1.8 due to plugin incompatibilities.  
-	Toolchain still defaults to 1.6 for compilation and tests (override java.build.version as needed)
+	Parent POM for Terracotta projects.
+
+    NOTE: this pom is exactly like 4.20 except for the target version
+    and is intended to serve as a parent for 4.1 maintenance branch.
+
+    The 3.x line is for JDK1.6 based projects.
+	Starting with 3.1000, projects inheriting this pom must be run with JDK 1.8 due to plugin incompatibilities.
+	Toolchain defaults to 1.8 for compilation and tests (override java.build.version as needed)
+    but the target JDK is 1.6.  This can be overridden via -Djava.target.version
   </description>
 
   <modules>
@@ -24,27 +30,44 @@
 
   <properties>
     <!-- NOTE: to override these when using maven release plugin use this format:
-      -Darguments=-Djava.build.version=1.7 -->
-    <java.build.version>1.6</java.build.version>
+      -Darguments=-Djava.build.version=9 -->
+    <java.build.version>1.8</java.build.version>
+    <java.target.verson>1.6</java.target.verson>
     <!-- The vendor value to look for in toolchains.xml -->
-    <java.build.vendor>Oracle Corporation</java.build.vendor>
-    <maven-forge-plugin.version>1.2.13</maven-forge-plugin.version>
-    <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
-    <finder.version>3.0</finder.version>
+    <java.build.vendor>zulu</java.build.vendor>
+    <maven-forge-plugin.version>1.2.40</maven-forge-plugin.version>
+    <java.test.version>${java.build.version}</java.test.version>
+    <java.test.vendor>${java.build.vendor}</java.test.vendor>
+    <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+    <surefire-plugin.version>3.0.0-M4</surefire-plugin.version>
+    <failsafe-plugin.version>3.0.0-M4</failsafe-plugin.version>
+    <slf4j.version>1.7.25</slf4j.version>
+    <logback.version>1.2.3</logback.version>
+    <junit.version>4.12</junit.version>
+    <commons-beanutils.version>1.9.4</commons-beanutils.version>
+    <hamcrest.version>2.1</hamcrest.version>
+    <mockito-core.version>3.0.0</mockito-core.version>
+    <commons-collections.version>3.2.2</commons-collections.version>
+    <commons-lang.version>2.6</commons-lang.version>
+    <commons-cli.version>1.4</commons-cli.version>
+    <commons-io.version>2.6</commons-io.version>
+    <commons-logging.version>1.2</commons-logging.version>
+    <jaxb-runtime.version>2.3.2</jaxb-runtime.version>
+    <javax-activation.version>1.2.0</javax-activation.version>
+    <jetty.version>9.4.28.v20200408</jetty.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
     <build.timestamp>${maven.build.timestamp}</build.timestamp>
-    <skipFindbugs>false</skipFindbugs>
+    <skipTests>false</skipTests>
     <skipCheckstyle>false</skipCheckstyle>
+    <skipJavadoc>false</skipJavadoc>
     <skipDeploy>false</skipDeploy>
-    <skipSagFinder>false</skipSagFinder>
 
     <checkstyle-groupId>org.terracotta.checkstyle</checkstyle-groupId>
     <checkstyle-artifactId>terracotta-checkstyle</checkstyle-artifactId>
-    <checkstyle-version>1.0</checkstyle-version>
-    <checkstyle-suppressions-file>${basedir}/../checkstyle/suppressions.xml</checkstyle-suppressions-file>
-    <checkstyle-config-file>checkstyle.xml</checkstyle-config-file>
-    <checkstyle-header-file>header.txt</checkstyle-header-file>
+    <checkstyle-version>1.4</checkstyle-version>
+    <checkstyle-config-file>terracotta-checkstyle/checkstyle.xml</checkstyle-config-file>
+    <checkstyle-header-file>terracotta-checkstyle/header.txt</checkstyle-header-file>
 
     <terracotta-os-snapshots-url>http://nexus.terracotta.eur.ad.sag/content/repositories/terracotta-os-snapshots</terracotta-os-snapshots-url>
     <terracotta-snapshots-url>http://nexus.terracotta.eur.ad.sag/content/repositories/terracotta-snapshots</terracotta-snapshots-url>
@@ -58,7 +81,7 @@
     <stagingProfile.openSource>6b2d2a23c465b</stagingProfile.openSource>
     <stagingProfile.public>6b2f08b6e4907</stagingProfile.public>
     <stagingProfile.private>6b2fc8d5c18d5</stagingProfile.private>
-  </properties>
+</properties>
 
   <distributionManagement>
     <repository>
@@ -75,7 +98,6 @@
   </distributionManagement>
 
   <profiles>
-
     <profile>
       <id>patch</id>
       <distributionManagement>
@@ -94,51 +116,20 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.2.1</version>
+          <version>3.1.0</version>
           <configuration>
             <forceCreation>true</forceCreation>
           </configuration>
           <executions>
             <execution>
               <id>attach-sources</id>
-              <phase>package</phase>
+              <phase>verify</phase>
               <goals>
                 <goal>jar</goal>
               </goals>
             </execution>
           </executions>
         </plugin>
-
-	<!-- Use the last <3 version, because this will likely run in JDK 1.6 via toolchains -->
-	<plugin>
-	    <groupId>org.apache.maven.plugins</groupId>
-	    <artifactId>maven-surefire-plugin</artifactId>
-	    <version>2.22.1</version>
-	</plugin>
-
-        <!--the new 3.1.0 version requires JDK 1.7, so downgrading it here for 3.x forge-parent-->
-	<!-- removed this in favor of using JDK 1.8 and default version -->
-	<!--
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-	-->
-	<!-- This version requires JDK 1.8 (older version would fail in JDK 1.8) -->
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>findbugs-maven-plugin</artifactId>
-          <version>3.0.5</version>
-          <configuration>
-            <findbugsXmlOutput>true</findbugsXmlOutput>
-            <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-            <xmlOutput>true</xmlOutput>
-            <skip>${skipFindbugs}</skip>
-          </configuration>
-        </plugin>
-
-	<!-- This version requires JDK 1.8 -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-pmd-plugin</artifactId>
@@ -148,16 +139,15 @@
             <targetJdk>${java.build.version}</targetJdk>
           </configuration>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.10</version>
+          <version>3.1.0</version>
           <dependencies>
             <dependency>
               <groupId>com.puppycrawl.tools</groupId>
               <artifactId>checkstyle</artifactId>
-              <version>5.9</version>
+              <version>8.24</version>
             </dependency>
             <dependency>
               <groupId>${checkstyle-groupId}</groupId>
@@ -169,10 +159,9 @@
             <configLocation>${checkstyle-config-file}</configLocation>
             <headerLocation>${checkstyle-header-file}</headerLocation>
             <encoding>UTF-8</encoding>
-            <suppressionsLocation>${checkstyle-suppressions-file}</suppressionsLocation>
             <consoleOutput>true</consoleOutput>
-            <failsOnError>true</failsOnError>
-            <failOnViolation>true</failOnViolation>
+            <failsOnError>false</failsOnError>
+            <failOnViolation>false</failOnViolation>
             <includeTestSourceDirectory>false</includeTestSourceDirectory>
             <enableRulesSummary>true</enableRulesSummary>
             <linkXRef>false</linkXRef>
@@ -181,166 +170,90 @@
           <executions>
             <execution>
               <id>run-checkstyle</id>
-              <phase>verify</phase>
+              <phase>validate</phase>
               <goals>
                 <goal>checkstyle</goal>
               </goals>
             </execution>
           </executions>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.7</version>
+          <version>3.0.0-M1</version>
           <configuration>
             <skip>${skipDeploy}</skip>
           </configuration>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.4.1</version>
+          <version>2.5.3</version>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.3.2</version><!-- we have a weird compiler problem in TC core common module which Jenkins doesn't show the error message if we upgrade this to version 3.1 -->
+          <version>3.8.1</version>
+          <configuration>
+            <source>${java.target.verson}</source>
+            <target>${java.target.verson}</target>
+          </configuration>
         </plugin>
-
         <plugin>
           <groupId>org.terracotta</groupId>
           <artifactId>maven-forge-plugin</artifactId>
           <version>${maven-forge-plugin.version}</version>
-        </plugin>
-        <!--This plugin's configuration is used to store Eclipse m2e settings
-          only. It has no influence on the Maven build itself. -->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
           <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <versionRange>[2.1,)</versionRange>
-                    <goals>
-                      <goal>build-classpath</goal>
-                      <goal>copy-depenendencies</goal>
-                      <goal>unpack</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.terracotta</groupId>
-                    <artifactId>maven-forge-plugin</artifactId>
-                    <versionRange>[1.0.0-SNAPSHOT,)</versionRange>
-                    <goals>
-                      <goal>manifest</goal>
-                      <goal>setl2classpath</goal>
-                      <goal>sag-finder</goal>
-                      <goal>buildinfo</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <versionRange>[2.8,)</versionRange>
-                    <goals>
-                      <goal>checkstyle</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <versionRange>[1.2,)</versionRange>
-                    <goals>
-                      <goal>exec</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.gmaven</groupId>
-                    <artifactId>gmaven-plugin</artifactId>
-                    <versionRange>[1.3,)</versionRange>
-                    <goals>
-                      <goal>execute</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.terracotta.maven.plugins</groupId>
-                    <artifactId>tc-maven-plugin</artifactId>
-                    <versionRange>[1.7.0,)</versionRange>
-                    <goals>
-                      <goal>manifest</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-remote-resources-plugin</artifactId>
-                    <versionRange>[1.1,)</versionRange>
-                    <goals>
-                      <goal>process</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <versionRange>[1.0.0,)</versionRange>
-                    <goals>
-                      <goal>enforce</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
+            <jdk>
+              <version>${java.test.version}</version>
+              <vendor>${java.test.vendor}</vendor>
+            </jdk>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven-javadoc-plugin.version}</version>
+          <configuration>
+            <source>8</source>
+            <skip>${skipJavadoc}</skip>
+            <doclint>html,reference,syntax</doclint>
+            <quiet>true</quiet>
+            <links>
+              <link>https://docs.oracle.com/javase/8/docs/api/</link>
+            </links>
+          </configuration>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${failsafe-plugin.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <skipITs>${skipTests}</skipITs>
+            <reuseForks>false</reuseForks>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -351,7 +264,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.4</version>
+        <version>3.1.2</version>
         <configuration>
           <archive>
             <manifestEntries>
@@ -375,7 +288,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-toolchains-plugin</artifactId>
-        <version>1.1</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <goals>
@@ -395,7 +308,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.3.1</version>
+        <version>3.0.0-M2</version>
         <executions>
           <execution>
             <id>enforce-java</id>
@@ -415,6 +328,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.5</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -427,63 +341,168 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-      </plugin>         
+      </plugin>
       <plugin>
         <groupId>org.terracotta</groupId>
         <artifactId>maven-forge-plugin</artifactId>
-
-        <dependencies>                                                                                                                                                                  
-          <dependency>                                                                                                                                                                  
-            <groupId>com.softwareag.ibit.tools.util</groupId>                                                                                                                           
-            <artifactId>finder</artifactId>                                                                                                                                             
-            <!-- Before bumping version - verify it still accepts exclusion files -->                                                                                                   
-            <version>${finder.version}</version>                                                                                                                                                      
-            <scope>compile</scope>                                                                                                                                                      
-          </dependency>                                                                                                                                                                 
-        </dependencies>         
-
         <executions>
           <execution>
-            <id>run-sag-finder</id>
-            <phase>compile</phase>
+            <id>default-test</id>
+            <phase>test</phase>
             <goals>
-              <goal>sag-finder</goal>
+              <goal>test</goal>
             </goals>
-            <configuration>
-              <skip>${skipSagFinder}</skip>
-              <onlyRunWhenSagDepsIsTrue>true</onlyRunWhenSagDepsIsTrue>
-              <excludeGroupIds>gf-3122,gf-40</excludeGroupIds>
-              <excludeArtifacts>
-                <excludeArtifact>org.codehaus.jackson:jackson-xc</excludeArtifact>
-                <excludeArtifact>javax.validation:validation-api</excludeArtifact>
-                <excludeArtifact>javax.xml.bind:jaxb-api</excludeArtifact>
-              </excludeArtifacts>
-            </configuration>            
           </execution>
         </executions>
-      </plugin>       
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.terracotta</groupId>
-        <artifactId>maven-forge-plugin</artifactId>
-        <version>${maven-forge-plugin.version}</version>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>javax.activation</artifactId>
+        <version>${javax-activation.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
         <exclusions>
           <exclusion>
-              <groupId>com.softwareag.ibit.tools.util</groupId>
-              <artifactId>finder</artifactId>
+            <artifactId>hamcrest-core</artifactId>
+            <groupId>org.hamcrest</groupId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest</artifactId>
+        <version>${hamcrest.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito-core.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>${commons-collections.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>${commons-lang.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-cli</artifactId>
+        <version>${commons-cli.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>${commons-beanutils.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${commons-logging.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>${jaxb-runtime.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <repositories>
     <repository>
+      <id>terracotta-snapshots</id>
+      <url>https://snapshots.terracotta.org/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
       <id>terracotta-releases</id>
-      <url>http://www.terracotta.org/download/reflector/releases</url>
+      <url>https://repo.terracotta.org/maven2</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -492,10 +511,21 @@
       </snapshots>
     </repository>
   </repositories>
+
   <pluginRepositories>
     <pluginRepository>
+      <id>terracotta-snapshots</id>
+      <url>https://snapshots.terracotta.org/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
       <id>terracotta-releases</id>
-      <url>http://www.terracotta.org/download/reflector/releases</url>
+      <url>https://repo.terracotta.org/maven2</url>
       <releases>
         <enabled>true</enabled>
       </releases>
