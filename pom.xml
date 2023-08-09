@@ -54,7 +54,7 @@
 
   <groupId>org.terracotta.forge</groupId>
   <artifactId>forge-parent</artifactId>
-  <version>5.9</version>
+  <version>5.9.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>forge-parent</name>
@@ -67,7 +67,7 @@
   <properties>
     <!-- NOTE: to override these when using maven release plugin use this format:
       -Darguments=-Djava.build.version=9 -->
-    <java.build.version>1.8</java.build.version>
+    <java.build.version>8</java.build.version>
     <!-- The vendor value to look for in toolchains.xml -->
     <java.build.vendor>zulu</java.build.vendor>
     <maven-forge-plugin.version>1.2.40</maven-forge-plugin.version>
@@ -132,48 +132,6 @@
           <url>${terracotta-patches-url}</url>
         </repository>
       </distributionManagement>
-    </profile>
-
-    <profile>
-      <!-- For system test projects that only have integration tests -->
-      <!-- Removes surefire execution and runs all tests in failsafe -->
-      <id>system-tests</id>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.terracotta</groupId>
-              <artifactId>maven-forge-plugin</artifactId>
-              <version>${maven-forge-plugin.version}</version>
-              <configuration>
-                <includes>
-                  <!-- pick up anything, not just **IT.java -->
-                  <include>**/*.java</include>
-                </includes>
-              </configuration>
-              <executions>
-                <!-- disable unit tests -->
-                <execution>
-                  <id>default-test</id>
-                  <phase>none</phase>
-                </execution>
-                <execution>
-                  <id>default-integration-test</id>
-                  <goals>
-                    <goal>integration-test</goal>
-                  </goals>
-                </execution>
-                <execution>
-                  <id>default-verify</id>
-                  <goals>
-                    <goal>verify</goal>
-                  </goals>
-                </execution>
-              </executions>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
     </profile>
   </profiles>
 
@@ -410,7 +368,7 @@
         <configuration>
           <toolchains>
             <jdk>
-              <version>${java.build.version}</version>
+              <version>1.${java.build.version}</version>
               <vendor>${java.build.vendor}</vendor>
             </jdk>
           </toolchains>
@@ -419,7 +377,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M2</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>enforce-java</id>
