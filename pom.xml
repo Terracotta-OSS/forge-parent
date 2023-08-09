@@ -261,7 +261,7 @@
           </executions>
           <configuration>
             <jdk>
-              <version>${java.test.version}</version>
+              <version>1.${java.test.version}</version>
               <vendor>${java.test.vendor}</vendor>
             </jdk>
           </configuration>
@@ -387,7 +387,7 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <version>[1.${java.build.version},)</version>
+                  <version>[${java.build.version},)</version>
                 </requireJavaVersion>
               </rules>
             </configuration>
