@@ -81,7 +81,7 @@
     <java.build.version>11</java.build.version>
     <!-- The vendor value to look for in toolchains.xml -->
     <java.build.vendor>zulu</java.build.vendor>
-    <maven-forge-plugin.version>2.0.0</maven-forge-plugin.version>
+    <maven-forge-plugin.version>2.0.4</maven-forge-plugin.version>
     <java.test.version>${java.build.version}</java.test.version>
     <java.test.vendor>${java.build.vendor}</java.test.vendor>
     <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
@@ -358,7 +358,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.5.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
