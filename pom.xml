@@ -2,6 +2,10 @@
 
 <!--
   CHANGELOG (significant changes)
+  8.1:
+    Move to Java 17
+    skipCheckStyle => true
+    javadoc quiet
   8.0:
     Updated project license and urls
     Now requires to set property: nexusUrl
@@ -78,24 +82,24 @@
   <properties>
     <!-- NOTE: to override these when using maven release plugin use this format:
       -Darguments=-Djava.build.version=1.9 -->
-    <java.build.version>11</java.build.version>
+    <java.build.version>17</java.build.version>
     <!-- The vendor value to look for in toolchains.xml -->
     <java.build.vendor>zulu</java.build.vendor>
     <maven-forge-plugin.version>2.0.4</maven-forge-plugin.version>
     <java.test.version>${java.build.version}</java.test.version>
     <java.test.vendor>${java.build.vendor}</java.test.vendor>
-    <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
-    <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
-    <failsafe-plugin.version>3.0.0-M7</failsafe-plugin.version>
+    <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+    <surefire-plugin.version>3.5.2</surefire-plugin.version>
+    <failsafe-plugin.version>3.5.2</failsafe-plugin.version>
     <findbugs-plugin.version>3.0.5</findbugs-plugin.version>
-    <source-plugin.version>3.2.1</source-plugin.version>
-    <checkstyle-plugin.version>3.2.0</checkstyle-plugin.version>
+    <source-plugin.version>3.3.1</source-plugin.version>
+    <checkstyle-plugin.version>3.6.0</checkstyle-plugin.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
     <build.timestamp>${maven.build.timestamp}</build.timestamp>
     <skipTests>false</skipTests>
-    <skipCheckstyle>false</skipCheckstyle>
+    <skipCheckstyle>true</skipCheckstyle>
     <skipJavadoc>false</skipJavadoc>
     <skipDeploy>false</skipDeploy>
 
@@ -162,7 +166,7 @@
           <executions>
             <execution>
               <id>attach-sources</id>
-              <phase>verify</phase>
+              <phase>package</phase>
               <goals>
                 <goal>jar</goal>
               </goals>
@@ -197,7 +201,6 @@
           <configuration>
             <configLocation>${checkstyle-config-file}</configLocation>
             <headerLocation>${checkstyle-header-file}</headerLocation>
-            <inputEncoding>UTF-8</inputEncoding>
             <consoleOutput>true</consoleOutput>
             <failsOnError>false</failsOnError>
             <failOnViolation>false</failOnViolation>
@@ -285,18 +288,18 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven-javadoc-plugin.version}</version>
           <configuration>
-            <source>8</source>
+            <source>17</source>
+            <detectJavaApiLink>false</detectJavaApiLink>
             <skip>${skipJavadoc}</skip>
-            <doclint>html,reference,syntax</doclint>
+            <doclint>none</doclint>
             <quiet>true</quiet>
             <links>
-              <link>https://docs.oracle.com/javase/8/docs/api/</link>
+              <link>https://docs.oracle.com/en/java/javase/17/docs/api/</link>
             </links>
           </configuration>
           <executions>
             <execution>
               <id>attach-javadocs</id>
-              <phase>prepare-package</phase>
               <goals>
                 <goal>jar</goal>
               </goals>
