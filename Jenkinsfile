@@ -16,4 +16,7 @@
 
 //Jenkins integration.
 //See https://svn.terracotta.org/repo/internal/infrastructure/jenkins-pipeline-job-builder/trunk/shared/vars/
-mavenBuild maven_goal: '-V clean deploy findbugs:findbugs pmd:pmd   -Ptc-publish,fullmode -Djenkins.publisher=true -Dsag-deps=true'
+mavenBuild(
+  maven_goal: '-V clean deploy findbugs:findbugs pmd:pmd   -Ptc-publish,fullmode -Djenkins.publisher=true -Dsag-deps=true',
+  jdk: 17
+)
