@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.terracotta.forge</groupId>
     <artifactId>forge-parent</artifactId>
-    <version>5.9.1</version>
+    <version>5.10-SNAPSHOT</version>
   </parent>
 
   <artifactId>forge-parent-ee</artifactId>
@@ -20,21 +20,9 @@
   <url>http://forge.terracotta.org/</url>
 
   <properties>
+    <artifactory-repokey-releases>hyc-webmriab-team-tc01-ee-releases-maven-local</artifactory-repokey-releases>
+    <artifactory-repokey-snapshots>hyc-webmriab-team-tc01-ee-snapshots-maven-local</artifactory-repokey-snapshots>
   </properties>
-
-  <distributionManagement>
-    <repository>
-      <id>terracotta-ee-releases</id>
-      <name>Terracotta EE Releases Repository</name>
-      <url>${terracotta-ee-releases-url}</url>
-    </repository>
-    <snapshotRepository>
-      <id>terracotta-ee-snapshots</id>
-       <uniqueVersion>false</uniqueVersion>
-       <name>Terracotta EE Snapshots Repository</name>
-       <url>${terracotta-ee-snapshots-url}</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <profiles>
   </profiles>
