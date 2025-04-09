@@ -94,6 +94,7 @@
     <java.test.version>${java.build.version}</java.test.version>
     <java.test.vendor>${java.build.vendor}</java.test.vendor>
     <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+    <deploy-plugin.version>3.1.4</deploy-plugin.version>
     <surefire-plugin.version>3.5.2</surefire-plugin.version>
     <failsafe-plugin.version>3.5.2</failsafe-plugin.version>
     <findbugs-plugin.version>3.0.5</findbugs-plugin.version>
@@ -199,14 +200,14 @@
                       <username>{{ARTIFACTORY_DEPLOY_USERNAME}}</username>
                       <password>{{ARTIFACTORY_DEPLOY_PASSWORD}}</password>
                       <excludePatterns>${artifactory-deploy-exclude-patterns}</excludePatterns>
-								      <includePatterns>${artifactory-deploy-include-patterns}</includePatterns> 
+                      <includePatterns>${artifactory-deploy-include-patterns}</includePatterns>
                       <repoKey>${artifactory-repokey-releases}</repoKey>
                       <snapshotRepoKey>${artifactory-repokey-snapshots}</snapshotRepoKey>
 
                       <publishArtifacts>true</publishArtifacts>
                       <publishBuildInfo>true</publishBuildInfo>
 
-                      <filterExcludedArtifactsFromBuild>${artifactory-deploy-filter-excluded}</filterExcludedArtifactsFromBuild> 
+                      <filterExcludedArtifactsFromBuild>${artifactory-deploy-filter-excluded}</filterExcludedArtifactsFromBuild>
                       <!-- If true build information published to Artifactory will include
 								implicit project as well as build-time dependencies -->
                       <recordAllDependencies>true</recordAllDependencies>
@@ -252,7 +253,7 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-deploy-plugin</artifactId>
-              <version>3.0.0</version>
+              <version>${deploy-plugin.version}</version>
               <configuration>
                 <skip>${skipDeploy}</skip>
               </configuration>
@@ -476,6 +477,17 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
           <version>${findbugs-plugin.version}</version>
+        </plugin>
+        <!-- enforce recent versions, otherwise artifactory plugin pulls in old ones -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${deploy-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${deploy-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
