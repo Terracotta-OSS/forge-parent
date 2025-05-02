@@ -90,7 +90,7 @@
     <java.build.version>17</java.build.version>
     <!-- The vendor value to look for in toolchains.xml -->
     <java.build.vendor>zulu</java.build.vendor>
-    <maven-forge-plugin.version>2.0.4</maven-forge-plugin.version>
+    <maven-forge-plugin.version>2.0.7</maven-forge-plugin.version>
     <java.test.version>${java.build.version}</java.test.version>
     <java.test.vendor>${java.build.vendor}</java.test.vendor>
     <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
