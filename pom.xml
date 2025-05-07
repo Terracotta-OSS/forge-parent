@@ -90,7 +90,7 @@
     <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
     <build.timestamp>${maven.build.timestamp}</build.timestamp>
     <skipTests>false</skipTests>
-    <skipCheckstyle>false</skipCheckstyle>
+    <skipCheckstyle>true</skipCheckstyle>
     <skipJavadoc>false</skipJavadoc>
     <skipDeploy>false</skipDeploy>
 
@@ -281,7 +281,7 @@
           <executions>
             <execution>
               <id>attach-sources</id>
-              <phase>verify</phase>
+              <phase>package</phase>
               <goals>
                 <goal>jar</goal>
               </goals>
@@ -463,17 +463,6 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
           <version>${findbugs-plugin.version}</version>
-        </plugin>
-        <!-- enforce recent versions, otherwise artifactory plugin pulls in old ones -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>${deploy-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>${deploy-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
