@@ -5,6 +5,8 @@
 
   <!--
   CHANGELOG (significant changes)
+  5.10:  
+    JDK 1.8 support branch for 4.3.10 with artifactory changes
   5.9:
     Revert S3 repo changes in forge-parent
   5.8:
