@@ -5,6 +5,10 @@
 
   <!--
   CHANGELOG (significant changes)
+  5.12:
+    Restore source plugin to unbreak shading, upgrade source plugin
+  5.11:
+    Remove source plugin from plugins section, avoid duplicate jars
   5.10:  
     JDK 1.8 support branch for 4.3.10 with artifactory changes
   5.9:
@@ -83,7 +87,7 @@
     <surefire-plugin.version>3.0.0-M4</surefire-plugin.version>
     <failsafe-plugin.version>3.0.0-M4</failsafe-plugin.version>
     <findbugs-plugin.version>3.0.5</findbugs-plugin.version>
-    <source-plugin.version>3.1.0</source-plugin.version>
+    <source-plugin.version>3.3.1</source-plugin.version>
     <checkstyle-plugin.version>3.1.0</checkstyle-plugin.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -276,14 +280,14 @@
           <artifactId>maven-source-plugin</artifactId>
           <version>${source-plugin.version}</version>
           <configuration>
-            <forceCreation>true</forceCreation>
+            <forceCreation>false</forceCreation>
           </configuration>
           <executions>
             <execution>
               <id>attach-sources</id>
               <phase>package</phase>
               <goals>
-                <goal>jar</goal>
+                <goal>jar-no-fork</goal>
               </goals>
             </execution>
           </executions>
@@ -543,6 +547,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
       </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>      
     </plugins>
   </build>
 
