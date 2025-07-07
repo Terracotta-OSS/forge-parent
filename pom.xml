@@ -5,6 +5,8 @@
 
   <!--
   CHANGELOG (significant changes)
+  5.13:
+    No default vendor requirement
   5.12:
     Restore source plugin to unbreak shading, upgrade source plugin
   5.11:
@@ -78,9 +80,14 @@
       -Darguments=-Djava.build.version=9 -->
     <java.build.version>8</java.build.version>
     <!-- The vendor value to look for in toolchains.xml -->
-    <java.build.vendor>zulu</java.build.vendor>
-    <maven-forge-plugin.version>1.2.40</maven-forge-plugin.version>
+    <!-- if this property is empty, does not restrict to a vendor -->
+    <!-- this property must be set on command line, not in a child pom -->
+    <java.build.vendor></java.build.vendor>
+    <maven-forge-plugin.version>2.0.7</maven-forge-plugin.version>
     <java.test.version>${java.build.version}</java.test.version>
+    <!-- The vendor value to look for in toolchains.xml -->
+    <!-- if this property is empty, does not restrict to a vendor -->
+    <!-- this property must be set on command line, not in a child pom -->
     <java.test.vendor>${java.build.vendor}</java.test.vendor>
     <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
     <deploy-plugin.version>3.1.4</deploy-plugin.version>
@@ -220,6 +227,76 @@
       </build>
     </profile>
 
+    <profile>
+      <id>toolchain-build-vendor</id>
+      <activation>
+        <property>
+          <name>java.build.vendor</name>
+        </property>
+      </activation>
+
+      <build>
+        <pluginManagement>
+          <plugins>
+            <!-- Ensure that we are compiling with the correct JDK even if we are running on a later
+      version -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-toolchains-plugin</artifactId>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>toolchain</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <!-- 
+                If java.build.vendor is set, this profile will 
+                redefine toolchain selector to include vendor 
+              -->              
+              <configuration>
+                <toolchains>
+                  <jdk>
+                    <version>1.${java.build.version}</version>
+                    <vendor>${java.build.vendor}</vendor>
+                  </jdk>
+                </toolchains>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
+    <profile>
+      <id>toolchain-test-vendor</id>
+      <activation>
+        <property>
+          <name>java.test.vendor</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.terracotta</groupId>
+              <artifactId>maven-forge-plugin</artifactId>
+              <version>${maven-forge-plugin.version}</version>
+              <!-- 
+                If java.test.vendor is set, this profile will 
+                redefine toolchain selector to include vendor 
+              -->
+              <configuration>
+                <jdk>
+                  <version>1.${java.test.version}</version>
+                  <vendor>${java.test.vendor}</vendor>
+                </jdk>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
     <profile>
       <!-- 
       mvn deploy directly uploads without artifactory plugin.
@@ -391,7 +468,6 @@
           <configuration>
             <jdk>
               <version>1.${java.test.version}</version>
-              <vendor>${java.test.vendor}</vendor>
             </jdk>
           </configuration>
         </plugin>
@@ -504,7 +580,6 @@
           <toolchains>
             <jdk>
               <version>1.${java.build.version}</version>
-              <vendor>${java.build.vendor}</vendor>
             </jdk>
           </toolchains>
         </configuration>
