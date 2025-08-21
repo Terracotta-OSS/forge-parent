@@ -5,6 +5,8 @@
 
   <!--
   CHANGELOG (significant changes)
+  9.2:
+    Move to Java 21
   9.1:
     No default vendor requirement
   9.0: 
@@ -89,7 +91,7 @@
   <properties>
     <!-- NOTE: to override these when using maven release plugin use this format:
       -Darguments=-Djava.build.version=1.9 -->
-    <java.build.version>17</java.build.version>
+    <java.build.version>21</java.build.version>
     <!-- The vendor value to look for in toolchains.xml -->
     <!-- if this property is empty, does not restrict to a vendor -->
     <!-- this property must be set on command line, not in a child pom -->
