@@ -103,6 +103,7 @@
     <!-- this property must be set on command line, not in a child pom -->
     <java.test.vendor>${java.build.vendor}</java.test.vendor>
     <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+    <deploy-plugin.version>3.1.4</deploy-plugin.version>
     <surefire-plugin.version>3.5.2</surefire-plugin.version>
     <failsafe-plugin.version>3.5.2</failsafe-plugin.version>
     <findbugs-plugin.version>3.0.5</findbugs-plugin.version>
@@ -331,7 +332,7 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-deploy-plugin</artifactId>
-              <version>3.0.0</version>
+              <version>${deploy-plugin.version}</version>
               <configuration>
                 <skip>${skipDeploy}</skip>
               </configuration>
@@ -555,6 +556,17 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
           <version>${findbugs-plugin.version}</version>
+        </plugin>
+        <!-- enforce recent versions, otherwise artifactory plugin pulls in old ones -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${deploy-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${deploy-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
