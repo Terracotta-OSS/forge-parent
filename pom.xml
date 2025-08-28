@@ -5,6 +5,9 @@
 
   <!--
   CHANGELOG (significant changes)
+  9.3:
+    Remove <vendor> element from maven-forge-parent configuration; let the new
+    toolchain-test-vendor profile do it's thing
   9.2:
     Move to Java 21
   9.1:
@@ -479,7 +482,6 @@
           <configuration>
             <jdk>
               <version>1.${java.test.version}</version>
-              <vendor>${java.test.vendor}</vendor>
             </jdk>
           </configuration>
         </plugin>
